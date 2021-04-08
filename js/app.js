@@ -1,5 +1,5 @@
 
-// require('dotenv').config()
+require('dotenv').config()
 
 // //Keys
 // import { firebaseConfig } from './keys.js';
