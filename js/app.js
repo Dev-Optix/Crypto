@@ -1,5 +1,5 @@
 
-// require('dotenv').config()
+
 
 // //Keys
 // import { firebaseConfig } from './keys.js';
@@ -12,7 +12,7 @@ let firebaseConfig = {
   messagingSenderId: process.env.MESSAGING_SENDER_ID,
   appId: process.env.APP_ID
 };
-
+console.log(firebaseConfig);
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
