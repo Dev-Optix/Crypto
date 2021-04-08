@@ -121,7 +121,7 @@ function sendFirebase(event) {
       volume: `${event.target.dataset.dayvolume}`
     })
     .then(() => {
-      console.log("Document successfully written!");
+      console.log("Document is successfully written!");
     })
     .catch((error) => {
       console.error("Error writing document: ", error);
