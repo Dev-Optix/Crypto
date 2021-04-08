@@ -7,40 +7,7 @@ firebase.initializeApp(firebaseConfig);
 
 
 // retrieve from firebase
-// import * as database from './database.js';
 const database = firebase.firestore();
-
-// database.firebaseCrypto()
-//   .then((pullCrypto) => {
-//     console.log(pullCrypto.docs[0].data());
-// })
-
-// export const messages = {
-//   updateVotes: (id, amount) => {
-//     return db.collection('messages').doc(id).update({
-//       votes: firebase.firestore.FieldValue.increment(amount)
-//     });
-//   },
-//   delete: (id) => {
-//     return db.collection('messages').doc(id).delete();
-//   },
-//   create: (message) => {
-//     return db.collection('messages').add({
-//       message,
-//       votes: 0
-//     });
-//   },
-//   getAll: () => {
-//     return db.collection('messages').get().then((snapshot) => {
-//       return snapshot.docs.map(doc => {
-//         return {
-//           id: doc.id,
-//           ...doc.data()
-//         };
-//       });
-//     });
-//   }
-// };
 
 
 function cryptoRender() {
@@ -103,19 +70,64 @@ function cryptoRender() {
   //clear out id = "main"
   document.getElementById('main').innerHTML = ''; 
 }
-cryptoRender();
 
-// collection("Crypto").doc(`${event.target.dataset.symbol}`).set
+
+//Read firebase data and create favorites DOM
+function favRender() {
+  
+  database.collection("Crypto").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      console.log("SYMBOL: " , doc.data().symbol);
+      let article = document.createElement('article');
+        article.innerHTML = `
+          <article class="article">
+            <section class="featuredImage">
+              
+            </section>
+            <section class="articleContent">
+                <h3>${doc.data().symbol}</h3></a>
+                <h6>${doc.data().tagline}</br></h6>
+                <h6>Category:</br> ${doc.data().category}</h5>
+                <h6>Sector:</br> ${doc.data().sector}</br></h5>
+
+                <button class="btn-2" 
+                  data-iddoc="${doc.data().symbol}"
+                type="button">
+                  Remove
+                </button>
+
+            </section>
+            <section class="impressions">
+              Price USD:</br>${doc.data().price}</br></br>
+              1hr % Change:</br>${doc.data().change}</br></br>
+              24hr Volume:</br>${doc.data().volume}
+            </section>
+            <div class="clearfix"></div>
+          </article>
+        `;
+        document.getElementById('main').appendChild(article);
+
+        
+    });
+  });
+}
+//Listener for Remove button
+document.addEventListener('click', function(event) {
+  deleteCrypto(event);
+});
 
 //To Firebase
 function sendFirebase(event) {
   if (event.target.classList.value.includes('btn-1')){
-    // event.preventDefault();
-    console.log("HELLO!!! ",event.target.dataset);
+    event.preventDefault();
     // Add a new document in collection "cities"
     database.collection("Crypto").doc(`${event.target.dataset.symbol}`).set({
       symbol: `${event.target.dataset.symbol}`,
       tagline: `${event.target.dataset.tag}`,
+      category: `${event.target.dataset.category}`,
+      sector: `${event.target.dataset.sector}`,
       price: `${event.target.dataset.price}`,
       change: `${event.target.dataset.hrchange}`,
       volume: `${event.target.dataset.dayvolume}`
@@ -126,6 +138,22 @@ function sendFirebase(event) {
     .catch((error) => {
       console.error("Error writing document: ", error);
     });
+  }
+}
+
+//Clicking Remove in Favorites to delete a document in Firebase
+function deleteCrypto(event) {
+  if (event.target.classList.value.includes('btn-2')) {
+    
+    database.collection("Crypto").doc(`${event.target.dataset.iddoc}`).delete().then(() => {
+      console.log("Document successfully deleted!");
+      document.getElementById('main').innerHTML = '';
+      favRender();
+      
+    }).catch((error) => {
+      console.error("Error removing document: ", error);
+    });
+
   }
 }
 
@@ -144,6 +172,13 @@ document.getElementById('cryptoList').addEventListener('click', (evt) => {
   setCrypto(cryptoRender, ': Crypto List');
 });
 
+//Clicking Favorites to populate article list on DOM
+document.getElementById('favs').addEventListener('click', (evt) => {
+  document.getElementById('main').innerHTML = '';
+  setCrypto(favRender, ': Favorites');
+});
+
+
 //Clicking Crypto to populate all articles list on DOM
 document.getElementById('cryptoTitle').addEventListener('click', (evt) => {
   document.getElementById('main').innerHTML = ''; //clear out id = "main"
@@ -153,12 +188,12 @@ document.getElementById('cryptoTitle').addEventListener('click', (evt) => {
 
 
 
-//Onload populate all articles list on DOM
-// window.onload = function() {
-//   document.getElementById('main').innerHTML = ''; //clear out id = "main"
-//   setNewsSource(cryptoRender, '');
-  
-// }
+// Onload populate all articles list on DOM
+window.onload = function() {
+  document.getElementById('main').innerHTML = ''; //clear out id = "main"
+  setCrypto(cryptoRender, '');
+  cryptoRender();
+}
 
 
 
