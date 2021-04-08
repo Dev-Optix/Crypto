@@ -1,10 +1,10 @@
 
-require('dotenv').config()
+// require('dotenv').config()
 
 // //Keys
 // import { firebaseConfig } from './keys.js';
 
-firebaseConfig = {
+let firebaseConfig = {
   apiKey: process.env.API_KEY,
   authDomain: process.env.AUTH_DOMAIN,
   projectId: process.env.PROJECT_ID,

@@ -2,9 +2,19 @@
   "name": "final-project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "js/app.js",
+  "targets": {
+    "main": {
+      "outputFormat": "esmodule"
+    }
+  },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
   },
   "repository": {
     "type": "git",
